@@ -1,6 +1,7 @@
 'use client'
 import React, { use, useEffect, useState } from 'react'
 import { deleteAppClientCache } from "next/dist/server/lib/render-server"
+import RepoList from '../moleculous/RepoList';
 
 const SearchQuery = async (user: string) => {
     const res = await fetch(`https://api.github.com/users/${user}`)
@@ -10,6 +11,12 @@ const SearchQuery = async (user: string) => {
 
 const SearchUser = (props: { user: string }) => {
     const [data, setData] = useState({});
+    const [hidden, setHidden] = useState(true);
+
+
+    const showRepo = () => {
+        setHidden(!hidden);
+    }
 
     useEffect(() => {
         console.log(props.user)
@@ -21,7 +28,7 @@ const SearchUser = (props: { user: string }) => {
         return <div>loading...</div>
     } else {
         return (
-            <div className="m-4">
+            <div className="m-4 flex flex-col items-center">
                 <div className="card w-96 bg-base-100 shadow-xl">
                     <figure><img src={data.avatar_url} /></figure>
                     <div className="card-body">
@@ -32,11 +39,15 @@ const SearchUser = (props: { user: string }) => {
                         </div>
 
                         <div className="card-actions justify-end">
-                            <button className="btn">Get Repo Info</button>
+                            <button className="btn" onClick={showRepo}>Get Repo Info</button>
                         </div>
-                        <div>Repo: {data.repos_url}</div>
                     </div>
                 </div>
+                {!hidden &&
+                    <div>
+                        <RepoList user={props.user} />
+                    </div>
+                }
             </div>
         );
     }
