@@ -10,16 +10,21 @@ const SearchQuery = async (user: string) => {
 
 const SearchUser = (props: { user: string }) => {
     const [data, setData] = useState({});
+    const [isLoding, setIsLoading] = useState(false);
 
     useEffect(() => {
+        setIsLoading(true)
         console.log(props.user)
         SearchQuery(props.user).then(data => setData(data));
+        setIsLoading(false);
     }, [props.user]);
 
-    if (!data.name) {
+    if(isLoding) {
         console.log("loading...");
         return <div>loading...</div>
-    } else {
+    } 
+    
+    if (data.login) {
         return (
             <div className="m-4">
                 <div className="card w-96 bg-base-100 shadow-xl">
