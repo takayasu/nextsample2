@@ -3,19 +3,9 @@ import React, { useEffect, useState } from "react";
 
 const metadata = [{ header: "Name", key: "name" }, { header: "Description", key: "description" }, { header: "Language", key: "language" }, { header: "URL", key: "html_url" }]
 
-const RepoList = (props: { user: string }) => {
+const RepoList = (props: { repos: any[] }) => {
 
-    const [data, setData] = useState([]);
 
-    const SearchQuery = async (user: string) => {
-        const res = await fetch(`https://api.github.com/users/${user}/repos`)
-        const json = await res.json()
-        return json
-    };
-
-    useEffect(() => {
-        SearchQuery(props.user).then(data => setData(data));
-    }, [props.user]);
 
 
     return (
@@ -31,7 +21,7 @@ const RepoList = (props: { user: string }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {data.map((item, index) => (
+                        {props.repos.map((item, index) => (
                             <tr key={index} >
                                 {metadata.map((meta, index) => (
                                     <td key={index} >{item[meta.key]}</td>
