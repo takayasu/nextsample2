@@ -1,11 +1,11 @@
 import { UserState } from "@/utils/atoms";
 import React from "react";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 
 
 const SearchUserBox = () => {
     const [user, setUser] = React.useState('')
-    const [appUser,setAppUser] = useRecoilState(UserState);
+    const setAppUser = useSetRecoilState(UserState);
 
     const handleSearch = () => {
         setAppUser(user);
