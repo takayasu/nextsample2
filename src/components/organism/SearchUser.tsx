@@ -1,20 +1,23 @@
 
 'use client'
 import React, { use, useEffect, useState } from 'react'
-import { deleteAppClientCache } from "next/dist/server/lib/render-server"
 import RepoList from '../moleculous/RepoList';
 import UserView from '../moleculous/UserView';
+import { useRecoilValue } from 'recoil';
+import { UserState } from '@/utils/atoms';
 
 
 
-const SearchUser = (props: { user: string }) => {
+const SearchUser = () => {
     const [data, setData] = useState({});
     const [hidden, setHidden] = useState(true);
     const [repo, setRepo] = useState([{}]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const SearchQueryUser = async (user: string) => {
+    const appUser = useRecoilValue(UserState);
+
+    const SearchQueryUser = async (user:string) => {
         const res = await fetch(`https://api.github.com/users/${user}`)
 
         if (res.ok) {
@@ -25,7 +28,7 @@ const SearchUser = (props: { user: string }) => {
 
     };
 
-    const SearchQueryRepo = async (user: string) => {
+    const SearchQueryRepo = async (user:string) => {
         const res = await fetch(`https://api.github.com/users/${user}/repos`)
         const json = await res.json()
         return json
@@ -40,7 +43,7 @@ const SearchUser = (props: { user: string }) => {
         setError("");
         setHidden(true);
 
-        SearchQueryUser(props.user).then(result => setData(result))
+        SearchQueryUser(appUser).then(result => setData(result))
             .catch(err => {
                 if (err.message == "404") {
                     setError("User Not Found")
@@ -49,7 +52,7 @@ const SearchUser = (props: { user: string }) => {
                 }
             })
 
-        SearchQueryRepo(props.user).then(result => setRepo(result))
+        SearchQueryRepo(appUser).then(result => setRepo(result))
             .catch(err => {
                 if (err.message == "404") {
                     setError("Repository Not Found")
@@ -60,7 +63,7 @@ const SearchUser = (props: { user: string }) => {
 
         setIsLoading(false)
 
-    }, [props.user]);
+    }, [appUser]);
 
     return (
         <div>
